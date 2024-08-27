@@ -110,7 +110,7 @@ def deploy_erc20s_and_pool(deployer):
 
 def main():
     if USE_STRATEGIES:
-        web3.eth.setGasPriceStrategy(gas_strategy)
+        # web3.eth.setGasPriceStrategy(gas_strategy)
         web3.middleware_onion.add(middleware.time_based_cache_middleware)
         web3.middleware_onion.add(middleware.latest_block_based_cache_middleware)
         web3.middleware_onion.add(middleware.simple_cache_middleware)

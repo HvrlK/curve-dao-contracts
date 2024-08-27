@@ -98,7 +98,7 @@ def deploy_part_two(admin, token, voting_escrow, confs=1, deployments_json=None)
     for name, weight in GAUGE_TYPES:
         gauge_controller.add_type(name, weight, {"from": admin, "required_confs": confs})
 
-    pool_proxy = PoolProxy.deploy({"from": admin, "required_confs": confs})
+    pool_proxy = PoolProxy.deploy(admin, admin, admin, {"from": admin, "required_confs": confs})
     minter = Minter.deploy(token, gauge_controller, {"from": admin, "required_confs": confs})
     token.set_minter(minter, {"from": admin, "required_confs": confs})
 
@@ -112,13 +112,13 @@ def deploy_part_two(admin, token, voting_escrow, confs=1, deployments_json=None)
         "PoolProxy": pool_proxy.address,
     }
     for name, (lp_token, weight) in POOL_TOKENS.items():
-        gauge = LiquidityGauge.deploy(lp_token, minter, {"from": admin, "required_confs": confs})
+        gauge = LiquidityGauge.deploy(lp_token, minter, admin, {"from": admin, "required_confs": confs})
         gauge_controller.add_gauge(gauge, 0, weight, {"from": admin, "required_confs": confs})
         deployments["LiquidityGauge"][name] = gauge.address
 
     for (name, (lp_token, reward_claim, reward_token, weight)) in REWARD_POOL_TOKENS.items():
         gauge = LiquidityGaugeReward.deploy(
-            lp_token, minter, reward_claim, reward_token, {"from": admin, "required_confs": confs}
+            lp_token, minter, reward_claim, reward_token, admin, {"from": admin, "required_confs": confs}
         )
         gauge_controller.add_gauge(gauge, 0, weight, {"from": admin, "required_confs": confs})
         deployments["LiquidityGaugeReward"][name] = gauge.address
